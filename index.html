@@ -1,322 +1,308 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Resume | Danish Raza</title>
+    <title>Danish Raza | Data Analyst Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals with Subtle Blue Accent -->
-    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. The navigation allows users to jump to different sections: Home (Summary), Experience, Projects, and Skills. This structure is intuitive, provides a clear overview, and allows recruiters to quickly access the information they're most interested in. The interactive skills chart and project highlights are designed to be more engaging than static text. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Modern Teal & Slate -->
+    <!-- Application Structure Plan: A single-page, top-navigation, scroll-spy design. This structure creates a more fluid, narrative-like experience, guiding the user through the resume's story from top to bottom. It's a common and effective pattern for modern personal portfolios that feels more like a website than a document. Sections fade in on scroll for a more dynamic feel. -->
     <!-- Visualization & Content Choices: 
-        - Report Info: Technical Skills -> Goal: Compare proficiency -> Viz/Presentation: Horizontal Bar Chart (Chart.js) -> Interaction: Hover to see skill names -> Justification: A bar chart provides a quick, visual comparison of skill strengths, which is more impactful than a simple list.
-        - Report Info: Project KPIs (Net Sales, Gross Margin etc.) -> Goal: Inform & Highlight -> Viz/Presentation: Key Metric Cards (HTML/Tailwind) -> Interaction: Static display for quick reading -> Justification: Highlighting key achievements as standalone metrics makes them immediately visible and impressive.
-        - Report Info: Professional Experience -> Goal: Organize & Detail -> Viz/Presentation: Chronological List (HTML/Tailwind) -> Interaction: None -> Justification: A standard chronological list is the clearest and most expected way to present work history.
+        - Report Info: Technical Skills -> Goal: Holistic Comparison -> Viz/Presentation: Radar Chart (Chart.js) -> Interaction: Hover over points -> Justification: A radar chart provides a multi-dimensional view of skill sets, showing strengths across different categories in a single, compelling graphic.
+        - Report Info: Project KPIs -> Goal: Inform & Highlight -> Viz/Presentation: Interactive Cards -> Interaction: Hover effect to lift the card and reveal details -> Justification: Cards organize project information cleanly. The hover interaction encourages engagement and makes the section feel more dynamic.
+        - Report Info: Experience -> Goal: Show Progression -> Viz/Presentation: Vertical Timeline (HTML/CSS) -> Interaction: None -> Justification: A timeline is an intuitive and visually appealing way to represent chronological work history.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f4f5; /* Warm neutral background */
-            color: #18181b;
+            background-color: #f8fafc;
+            color: #334155;
         }
         .nav-link {
-            transition: all 0.3s ease;
+            position: relative;
+            transition: color 0.3s ease;
         }
-        .nav-link.active {
-            background-color: #3b82f6;
-            color: white;
-            font-weight: 500;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #14b8a6;
+            transition: width 0.3s ease;
         }
-        .nav-link:not(.active):hover {
-            background-color: #e4e4e7;
+        .nav-link.active, .nav-link:hover {
+            color: #0d9488;
         }
-        .content-section {
-            display: none;
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 100%;
         }
-        .content-section.active {
-            display: block;
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 700px;
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            height: 400px;
-            max-height: 50vh;
+            height: 450px;
+            max-height: 60vh;
         }
         @media (max-width: 768px) {
             .chart-container {
-                height: 300px;
+                height: 350px;
             }
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="flex flex-col md:flex-row min-h-screen">
-        <!-- Sidebar Navigation -->
-        <aside class="w-full md:w-64 bg-zinc-100 border-r border-zinc-200 p-6">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl font-bold text-zinc-800">Danish Raza</h1>
-                <p class="text-md text-zinc-600">Data Analyst</p>
-            </div>
-            <nav class="mt-8">
-                <ul class="space-y-2">
-                    <li><a href="#home" class="nav-link block p-3 rounded-lg active">Home</a></li>
-                    <li><a href="#experience" class="nav-link block p-3 rounded-lg">Experience</a></li>
-                    <li><a href="#projects" class="nav-link block p-3 rounded-lg">Projects</a></li>
-                    <li><a href="#skills" class="nav-link block p-3 rounded-lg">Skills</a></li>
-                    <li><a href="#contact" class="nav-link block p-3 rounded-lg">Contact</a></li>
-                </ul>
-            </nav>
-            <div class="mt-8 text-xs text-zinc-500 text-center md:text-left">
-                <p>&copy; 2025 Danish Raza</p>
-                <p>Interactive Resume</p>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-6 md:p-10">
-            <!-- Home/Summary Section -->
-            <section id="home" class="content-section active">
-                 <div class="bg-white p-8 rounded-xl shadow-sm">
-                    <h2 class="text-3xl font-bold text-zinc-800 mb-4 border-b pb-2">Professional Summary</h2>
-                    <p class="text-zinc-700 leading-relaxed">
-                        This section provides a brief overview of my professional background. It highlights my core competencies as a Data Analyst, including my experience in IT training and my proficiency with key data tools. The goal is to give a quick yet comprehensive snapshot of my capabilities and career aspirations.
-                    </p>
-                    <p class="mt-4 text-zinc-600 leading-relaxed">
-                        Detail-oriented and motivated Data Analyst with 2 years of experience in IT training and a strong foundation in data visualization, database management, and programming. Proficient in transforming complex data into actionable business insights using Power BI, SQL, and Python. Seeking to leverage analytical skills and a passion for technology to contribute to a data-driven organization.
-                    </p>
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="text-xl font-bold text-slate-800">Danish Raza</a>
                 </div>
-            </section>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#about" class="nav-link px-3 py-2 text-sm font-medium text-slate-600">About</a>
+                        <a href="#experience" class="nav-link px-3 py-2 text-sm font-medium text-slate-600">Experience</a>
+                        <a href="#projects" class="nav-link px-3 py-2 text-sm font-medium text-slate-600">Projects</a>
+                        <a href="#skills" class="nav-link px-3 py-2 text-sm font-medium text-slate-600">Skills</a>
+                        <a href="#contact" class="nav-link px-3 py-2 text-sm font-medium text-slate-600">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-            <!-- Experience Section -->
-            <section id="experience" class="content-section">
-                <div class="bg-white p-8 rounded-xl shadow-sm">
-                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Professional Experience</h2>
-                    <p class="text-zinc-700 leading-relaxed mb-8">
-                        Here you can explore my professional history in detail. This section outlines my role, responsibilities, and key achievements. It demonstrates my practical experience in training, mentorship, and curriculum development, showcasing the real-world application of my skills.
-                    </p>
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-zinc-700">IT Trainer (Domestic Data Entry Operator)</h3>
-                        <p class="text-md text-zinc-500">Indian Foundation (JSDMS Affiliated Project) | Ranchi, Jharkhand</p>
-                        <p class="text-sm text-zinc-400">July 2022 – Present</p>
-                        <ul class="mt-4 list-disc list-inside text-zinc-600 space-y-2">
-                            <li>Developed and delivered comprehensive training modules on data entry operations, MS Office, and internet proficiency to over 100+ students.</li>
-                            <li>Employed innovative teaching methodologies, including gamified learning, to increase student engagement and knowledge retention by over 40%.</li>
-                            <li>Mentored students on developing essential soft skills, leading to a 25% increase in successful job placements post-training.</li>
-                            <li>Assessed student progress through regular examinations, providing constructive feedback to ensure skill mastery.</li>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Hero Section -->
+        <section id="hero" class="text-center py-20">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 tracking-tight">
+                <span class="block">Transforming Data</span>
+                <span class="block text-teal-500">into Actionable Insights</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-500">
+                A motivated Data Analyst with a passion for uncovering stories hidden in data, proficient in Power BI, SQL, and Python.
+            </p>
+            <div class="mt-8">
+                <a href="#projects" class="inline-block bg-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-600 transition-colors">
+                    View My Work
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 fade-in-section">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800">About Me</h2>
+                <p class="mt-2 text-lg text-slate-500">A brief introduction to my professional background and goals.</p>
+            </div>
+            <div class="mt-10 max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
+                <p class="text-slate-600 leading-relaxed">
+                    This section provides a summary of my professional identity. It outlines my core skills as a Data Analyst, my experience in IT training, and my enthusiasm for leveraging technology to solve complex problems. The goal is to offer a concise yet powerful snapshot of who I am professionally.
+                </p>
+                <p class="mt-4 text-slate-600 leading-relaxed">
+                    With 2 years of experience in IT training, I have a strong foundation in data visualization, database management, and programming. I am adept at transforming complex datasets into clear, actionable business insights using Power BI, SQL, and Python. I am actively seeking an opportunity to apply my analytical skills and dedication to a data-driven organization that values innovation and growth.
+                </p>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-16 fade-in-section">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800">Professional Experience</h2>
+                <p class="mt-2 text-lg text-slate-500">A timeline of my career journey.</p>
+            </div>
+            <div class="mt-12 max-w-3xl mx-auto">
+                <p class="text-center text-slate-600 leading-relaxed mb-8">
+                    My professional history is presented here as a timeline. This format clearly shows my role, responsibilities, and key achievements at the Indian Foundation, demonstrating my practical experience in training, mentorship, and curriculum development.
+                </p>
+                <div class="relative border-l-2 border-teal-200">
+                    <div class="mb-10 ml-6">
+                        <span class="absolute flex items-center justify-center w-6 h-6 bg-teal-200 rounded-full -left-3 ring-8 ring-white">
+                            <span class="w-3 h-3 bg-teal-500 rounded-full"></span>
+                        </span>
+                        <h3 class="flex items-center mb-1 text-lg font-semibold text-slate-900">IT Trainer <span class="text-teal-500 bg-teal-100 text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3">Present</span></h3>
+                        <time class="block mb-2 text-sm font-normal leading-none text-slate-400">Indian Foundation (JSDMS Affiliated Project) | July 2022 – Present</time>
+                        <ul class="mt-4 list-disc list-inside text-slate-600 space-y-2">
+                            <li>Developed and delivered training on data entry, MS Office, and internet proficiency to 100+ students.</li>
+                            <li>Increased student engagement and knowledge retention by over 40% using gamified learning.</li>
+                            <li>Mentored students on soft skills, leading to a 25% increase in successful job placements.</li>
                         </ul>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Projects Section -->
-            <section id="projects" class="content-section">
-                 <div class="bg-white p-8 rounded-xl shadow-sm">
-                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Project Highlights</h2>
-                     <p class="text-zinc-700 leading-relaxed mb-8">
-                        This section showcases a key project that demonstrates my analytical and technical abilities. I've highlighted the most impactful results and KPIs from the AtliQ Hardware analysis. This provides tangible evidence of my ability to derive meaningful business insights from complex data.
-                    </p>
-                    <div>
-                        <h3 class="text-xl font-semibold text-zinc-700">AtliQ Hardware - Business Insights Dashboard</h3>
-                        <p class="mt-2 text-zinc-600">A comprehensive Power BI dashboard developed to analyze sales, finance, and supply chain data for a fictional hardware company, providing a clear view of business health.</p>
-                        
-                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <p class="text-2xl font-bold text-blue-600">282%</p>
-                                <p class="text-sm text-blue-500">YoY Net Sales Increase</p>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-lg">
-                                <p class="text-2xl font-bold text-green-600">41.20%</p>
-                                <p class="text-sm text-green-500">Gross Margin</p>
-                            </div>
-                            <div class="bg-yellow-50 p-4 rounded-lg">
-                                <p class="text-2xl font-bold text-yellow-600">88.84%</p>
-                                <p class="text-sm text-yellow-500">Forecast Accuracy</p>
-                            </div>
+        <!-- Projects Section -->
+        <section id="projects" class="py-16 fade-in-section">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800">Project Spotlight</h2>
+                <p class="mt-2 text-lg text-slate-500">A showcase of my analytical work.</p>
+            </div>
+            <div class="mt-12 max-w-4xl mx-auto">
+                 <p class="text-center text-slate-600 leading-relaxed mb-8">
+                    This section highlights a key project demonstrating my technical abilities. The card below summarizes the AtliQ Hardware analysis, providing tangible evidence of my ability to derive meaningful business insights from complex data. Hover over the card for more details.
+                </p>
+                <div class="group bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                    <h3 class="text-xl font-bold text-slate-800">AtliQ Hardware - Business Insights Dashboard</h3>
+                    <p class="mt-2 text-slate-500">A comprehensive Power BI dashboard analyzing sales, finance, and supply chain data.</p>
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div class="bg-slate-100 p-4 rounded-lg">
+                            <p class="text-2xl font-bold text-teal-600">282%</p>
+                            <p class="text-sm text-slate-500">YoY Net Sales Increase</p>
                         </div>
-
-                        <ul class="mt-6 list-disc list-inside text-zinc-600 space-y-2">
-                            <li>Engineered P&L statements, performance matrices, and unit economics charts.</li>
-                            <li>Utilized DAX and Power Query to clean, transform, and model complex datasets.</li>
-                            <li>Identified "Excess Inventory" as a key supply chain risk through data analysis.</li>
-                            <li>Tracked KPIs like Net Profit (2.21%) across different regions and product segments.</li>
-                        </ul>
+                        <div class="bg-slate-100 p-4 rounded-lg">
+                            <p class="text-2xl font-bold text-teal-600">41.20%</p>
+                            <p class="text-sm text-slate-500">Gross Margin</p>
+                        </div>
+                        <div class="bg-slate-100 p-4 rounded-lg">
+                            <p class="text-2xl font-bold text-teal-600">88.84%</p>
+                            <p class="text-sm text-slate-500">Forecast Accuracy</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p class="text-sm text-slate-600">Engineered P&L statements, performance matrices, and identified "Excess Inventory" as a key supply chain risk using DAX and Power Query.</p>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Skills Section -->
-            <section id="skills" class="content-section">
-                <div class="bg-white p-8 rounded-xl shadow-sm">
-                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Technical Skills</h2>
-                    <p class="text-zinc-700 leading-relaxed mb-8">
-                        This section provides a visual representation of my technical skills. Instead of a simple list, I've used a chart to illustrate my proficiency levels across different domains, from data analysis and visualization to databases and programming languages. Hover over the bars to see each skill. This interactive element is designed to give a quick and clear understanding of my technical capabilities.
-                    </p>
-                    <div class="chart-container">
-                        <canvas id="skillsChart"></canvas>
-                    </div>
+        <!-- Skills Section -->
+        <section id="skills" class="py-16 fade-in-section">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800">Technical Skills</h2>
+                <p class="mt-2 text-lg text-slate-500">A visual overview of my capabilities.</p>
+            </div>
+            <div class="mt-12 max-w-3xl mx-auto">
+                <p class="text-center text-slate-600 leading-relaxed mb-8">
+                    This radar chart provides a multi-dimensional view of my technical skills. It visually represents my proficiency across different domains, from core data analysis tools to programming and cloud technologies. This interactive format gives a quick yet comprehensive understanding of my technical strengths.
+                </p>
+                <div class="chart-container bg-white p-4 rounded-xl shadow-md">
+                    <canvas id="skillsRadarChart"></canvas>
                 </div>
-            </section>
-            
-            <!-- Contact Section -->
-            <section id="contact" class="content-section">
-                 <div class="bg-white p-8 rounded-xl shadow-sm">
-                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Contact Information</h2>
-                     <p class="text-zinc-700 leading-relaxed mb-8">
-                        Feel free to reach out. This section contains all the necessary information to get in touch with me.
-                    </p>
-                    <div class="space-y-4 text-zinc-700">
-                        <p><strong>Location:</strong> Ranchi, Jharkhand, IN</p>
-                        <p><strong>Phone:</strong> +91 7295015202</p>
-                        <p><strong>Email:</strong> danish.raza.work@email.com</p>
-                        <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/danishraza7" target="_blank" class="text-blue-500 hover:underline">linkedin.com/in/danishraza7</a></p>
-                    </div>
-                </div>
-            </section>
+            </div>
+        </section>
 
-        </main>
-    </div>
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 fade-in-section">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-slate-800">Get In Touch</h2>
+                <p class="mt-2 text-lg text-slate-500">I'm open to new opportunities and collaborations.</p>
+                <div class="mt-8">
+                    <a href="mailto:danish.raza.work@email.com" class="inline-block bg-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-600 transition-colors">
+                        Say Hello
+                    </a>
+                </div>
+                <div class="mt-8 text-slate-600">
+                    <p><strong>Location:</strong> Ranchi, Jharkhand, IN</p>
+                    <p class="mt-1"><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/danishraza7" target="_blank" class="text-teal-600 hover:underline">linkedin.com/in/danishraza7</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const contentSections = document.querySelectorAll('.content-section');
-
-            function updateContent(hash) {
-                // Default to #home if hash is empty or just #
-                const targetHash = (hash === '' || hash === '#') ? '#home' : hash;
-                
-                let sectionFound = false;
-                contentSections.forEach(section => {
-                    if ('#' + section.id === targetHash) {
-                        section.classList.add('active');
-                        sectionFound = true;
-                    } else {
-                        section.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fade-in sections on scroll
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
                     }
                 });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
 
-                // If no section matches, default to home
-                if (!sectionFound) {
-                    document.getElementById('home').classList.add('active');
-                }
+            // Active nav link on scroll (Scroll-spy)
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('section');
+            const onScroll = () => {
+                let currentSection = '';
+                contentSections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) { // 80 is header height + offset
+                        currentSection = section.getAttribute('id');
+                    }
+                });
 
                 navLinks.forEach(link => {
-                    if (link.getAttribute('href') === targetHash) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
                         link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
                     }
                 });
-            }
+            };
+            window.addEventListener('scroll', onScroll);
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetHash = this.getAttribute('href');
-                    window.location.hash = targetHash;
-                });
-            });
-            
-            window.addEventListener('hashchange', function() {
-                updateContent(window.location.hash);
-            });
-
-            // Initial load
-            updateContent(window.location.hash);
-
-
-            // Skills Chart
-            const skillsCtx = document.getElementById('skillsChart');
-            if(skillsCtx) {
-                const skillsChart = new Chart(skillsCtx, {
-                    type: 'bar',
+            // Skills Radar Chart
+            const skillsCtx = document.getElementById('skillsRadarChart');
+            if (skillsCtx) {
+                new Chart(skillsCtx, {
+                    type: 'radar',
                     data: {
                         labels: [
-                            'Power BI', 'DAX', 'Power Query', 'MS Excel',
-                            'SQL', 'Python', 'Google Cloud', 'AI/ML Concepts',
-                            'HTML/CSS/JS', 'React'
+                            'Power BI', 'SQL', 'Python', 'MS Excel', 'Data Modeling', 'Cloud (GCP)', 'AI/ML Concepts'
                         ],
                         datasets: [{
-                            label: 'Proficiency Level',
-                            data: [90, 85, 88, 95, 85, 75, 70, 65, 60, 50],
-                            backgroundColor: [
-                                'rgba(59, 130, 246, 0.7)',
-                                'rgba(59, 130, 246, 0.7)',
-                                'rgba(59, 130, 246, 0.7)',
-                                'rgba(59, 130, 246, 0.7)',
-                                'rgba(34, 197, 94, 0.7)',
-                                'rgba(34, 197, 94, 0.7)',
-                                'rgba(234, 179, 8, 0.7)',
-                                'rgba(234, 179, 8, 0.7)',
-                                'rgba(249, 115, 22, 0.7)',
-                                'rgba(249, 115, 22, 0.7)'
-                            ],
-                            borderColor: [
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(34, 197, 94, 1)',
-                                'rgba(34, 197, 94, 1)',
-                                'rgba(234, 179, 8, 1)',
-                                'rgba(234, 179, 8, 1)',
-                                'rgba(249, 115, 22, 1)',
-                                'rgba(249, 115, 22, 1)'
-                            ],
-                            borderWidth: 1
+                            label: 'Proficiency',
+                            data: [90, 85, 75, 95, 80, 70, 65],
+                            backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                            borderColor: 'rgba(13, 148, 136, 1)',
+                            pointBackgroundColor: 'rgba(13, 148, 136, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(13, 148, 136, 1)'
                         }]
                     },
                     options: {
-                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.x !== null) {
-                                            label += context.parsed.x + '%';
-                                        }
-                                        return label;
-                                    }
-                                }
                             }
                         },
                         scales: {
-                            x: {
+                            r: {
                                 beginAtZero: true,
                                 max: 100,
+                                angleLines: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    color: '#334155'
+                                },
                                 ticks: {
-                                    callback: function(value) {
-                                        return value + "%"
-                                    }
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    autoSkip: false,
-                                    callback: function(value, index, values) {
-                                        const label = this.getLabelForValue(value);
-                                        if (label.length > 16) {
-                                            return label.substring(0, 16) + '...';
-                                        }
-                                        return label;
-                                    }
+                                    backdropColor: 'transparent',
+                                    stepSize: 20
                                 }
                             }
                         }
