@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Danish Raza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Blue Accent -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. The navigation allows users to jump to different sections: Home (Summary), Experience, Projects, and Skills. This structure is intuitive, provides a clear overview, and allows recruiters to quickly access the information they're most interested in. The interactive skills chart and project highlights are designed to be more engaging than static text. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Technical Skills -> Goal: Compare proficiency -> Viz/Presentation: Horizontal Bar Chart (Chart.js) -> Interaction: Hover to see skill names -> Justification: A bar chart provides a quick, visual comparison of skill strengths, which is more impactful than a simple list.
+        - Report Info: Project KPIs (Net Sales, Gross Margin etc.) -> Goal: Inform & Highlight -> Viz/Presentation: Key Metric Cards (HTML/Tailwind) -> Interaction: Static display for quick reading -> Justification: Highlighting key achievements as standalone metrics makes them immediately visible and impressive.
+        - Report Info: Professional Experience -> Goal: Organize & Detail -> Viz/Presentation: Chronological List (HTML/Tailwind) -> Interaction: None -> Justification: A standard chronological list is the clearest and most expected way to present work history.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f5; /* Warm neutral background */
+            color: #18181b;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #e4e4e7;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-zinc-100 border-r border-zinc-200 p-6">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl font-bold text-zinc-800">Danish Raza</h1>
+                <p class="text-md text-zinc-600">Data Analyst</p>
+            </div>
+            <nav class="mt-8">
+                <ul class="space-y-2">
+                    <li><a href="#home" class="nav-link block p-3 rounded-lg active">Home</a></li>
+                    <li><a href="#experience" class="nav-link block p-3 rounded-lg">Experience</a></li>
+                    <li><a href="#projects" class="nav-link block p-3 rounded-lg">Projects</a></li>
+                    <li><a href="#skills" class="nav-link block p-3 rounded-lg">Skills</a></li>
+                    <li><a href="#contact" class="nav-link block p-3 rounded-lg">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mt-8 text-xs text-zinc-500 text-center md:text-left">
+                <p>&copy; 2025 Danish Raza</p>
+                <p>Interactive Resume</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            <!-- Home/Summary Section -->
+            <section id="home" class="content-section active">
+                 <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-3xl font-bold text-zinc-800 mb-4 border-b pb-2">Professional Summary</h2>
+                    <p class="text-zinc-700 leading-relaxed">
+                        This section provides a brief overview of my professional background. It highlights my core competencies as a Data Analyst, including my experience in IT training and my proficiency with key data tools. The goal is to give a quick yet comprehensive snapshot of my capabilities and career aspirations.
+                    </p>
+                    <p class="mt-4 text-zinc-600 leading-relaxed">
+                        Detail-oriented and motivated Data Analyst with 2 years of experience in IT training and a strong foundation in data visualization, database management, and programming. Proficient in transforming complex data into actionable business insights using Power BI, SQL, and Python. Seeking to leverage analytical skills and a passion for technology to contribute to a data-driven organization.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience" class="content-section">
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Professional Experience</h2>
+                    <p class="text-zinc-700 leading-relaxed mb-8">
+                        Here you can explore my professional history in detail. This section outlines my role, responsibilities, and key achievements. It demonstrates my practical experience in training, mentorship, and curriculum development, showcasing the real-world application of my skills.
+                    </p>
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold text-zinc-700">IT Trainer (Domestic Data Entry Operator)</h3>
+                        <p class="text-md text-zinc-500">Indian Foundation (JSDMS Affiliated Project) | Ranchi, Jharkhand</p>
+                        <p class="text-sm text-zinc-400">July 2022 – Present</p>
+                        <ul class="mt-4 list-disc list-inside text-zinc-600 space-y-2">
+                            <li>Developed and delivered comprehensive training modules on data entry operations, MS Office, and internet proficiency to over 100+ students.</li>
+                            <li>Employed innovative teaching methodologies, including gamified learning, to increase student engagement and knowledge retention by over 40%.</li>
+                            <li>Mentored students on developing essential soft skills, leading to a 25% increase in successful job placements post-training.</li>
+                            <li>Assessed student progress through regular examinations, providing constructive feedback to ensure skill mastery.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="content-section">
+                 <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Project Highlights</h2>
+                     <p class="text-zinc-700 leading-relaxed mb-8">
+                        This section showcases a key project that demonstrates my analytical and technical abilities. I've highlighted the most impactful results and KPIs from the AtliQ Hardware analysis. This provides tangible evidence of my ability to derive meaningful business insights from complex data.
+                    </p>
+                    <div>
+                        <h3 class="text-xl font-semibold text-zinc-700">AtliQ Hardware - Business Insights Dashboard</h3>
+                        <p class="mt-2 text-zinc-600">A comprehensive Power BI dashboard developed to analyze sales, finance, and supply chain data for a fictional hardware company, providing a clear view of business health.</p>
+                        
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-center">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <p class="text-2xl font-bold text-blue-600">282%</p>
+                                <p class="text-sm text-blue-500">YoY Net Sales Increase</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <p class="text-2xl font-bold text-green-600">41.20%</p>
+                                <p class="text-sm text-green-500">Gross Margin</p>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded-lg">
+                                <p class="text-2xl font-bold text-yellow-600">88.84%</p>
+                                <p class="text-sm text-yellow-500">Forecast Accuracy</p>
+                            </div>
+                        </div>
+
+                        <ul class="mt-6 list-disc list-inside text-zinc-600 space-y-2">
+                            <li>Engineered P&L statements, performance matrices, and unit economics charts.</li>
+                            <li>Utilized DAX and Power Query to clean, transform, and model complex datasets.</li>
+                            <li>Identified "Excess Inventory" as a key supply chain risk through data analysis.</li>
+                            <li>Tracked KPIs like Net Profit (2.21%) across different regions and product segments.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="content-section">
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Technical Skills</h2>
+                    <p class="text-zinc-700 leading-relaxed mb-8">
+                        This section provides a visual representation of my technical skills. Instead of a simple list, I've used a chart to illustrate my proficiency levels across different domains, from data analysis and visualization to databases and programming languages. Hover over the bars to see each skill. This interactive element is designed to give a quick and clear understanding of my technical capabilities.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Contact Section -->
+            <section id="contact" class="content-section">
+                 <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <h2 class="text-3xl font-bold text-zinc-800 mb-6 border-b pb-2">Contact Information</h2>
+                     <p class="text-zinc-700 leading-relaxed mb-8">
+                        Feel free to reach out. This section contains all the necessary information to get in touch with me.
+                    </p>
+                    <div class="space-y-4 text-zinc-700">
+                        <p><strong>Location:</strong> Ranchi, Jharkhand, IN</p>
+                        <p><strong>Phone:</strong> +91 7295015202</p>
+                        <p><strong>Email:</strong> danish.raza.work@email.com</p>
+                        <p><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/danishraza7" target="_blank" class="text-blue-500 hover:underline">linkedin.com/in/danishraza7</a></p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            function updateContent(hash) {
+                // Default to #home if hash is empty or just #
+                const targetHash = (hash === '' || hash === '#') ? '#home' : hash;
+                
+                let sectionFound = false;
+                contentSections.forEach(section => {
+                    if ('#' + section.id === targetHash) {
+                        section.classList.add('active');
+                        sectionFound = true;
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+
+                // If no section matches, default to home
+                if (!sectionFound) {
+                    document.getElementById('home').classList.add('active');
+                }
+
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === targetHash) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetHash = this.getAttribute('href');
+                    window.location.hash = targetHash;
+                });
+            });
+            
+            window.addEventListener('hashchange', function() {
+                updateContent(window.location.hash);
+            });
+
+            // Initial load
+            updateContent(window.location.hash);
+
+
+            // Skills Chart
+            const skillsCtx = document.getElementById('skillsChart');
+            if(skillsCtx) {
+                const skillsChart = new Chart(skillsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [
+                            'Power BI', 'DAX', 'Power Query', 'MS Excel',
+                            'SQL', 'Python', 'Google Cloud', 'AI/ML Concepts',
+                            'HTML/CSS/JS', 'React'
+                        ],
+                        datasets: [{
+                            label: 'Proficiency Level',
+                            data: [90, 85, 88, 95, 85, 75, 70, 65, 60, 50],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(34, 197, 94, 0.7)',
+                                'rgba(34, 197, 94, 0.7)',
+                                'rgba(234, 179, 8, 0.7)',
+                                'rgba(234, 179, 8, 0.7)',
+                                'rgba(249, 115, 22, 0.7)',
+                                'rgba(249, 115, 22, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(34, 197, 94, 1)',
+                                'rgba(34, 197, 94, 1)',
+                                'rgba(234, 179, 8, 1)',
+                                'rgba(234, 179, 8, 1)',
+                                'rgba(249, 115, 22, 1)',
+                                'rgba(249, 115, 22, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.x !== null) {
+                                            label += context.parsed.x + '%';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + "%"
+                                    }
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    autoSkip: false,
+                                    callback: function(value, index, values) {
+                                        const label = this.getLabelForValue(value);
+                                        if (label.length > 16) {
+                                            return label.substring(0, 16) + '...';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
